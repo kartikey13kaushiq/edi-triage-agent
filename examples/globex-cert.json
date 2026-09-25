@@ -1,0 +1,10 @@
+{
+  "incident_id": "INC-009",
+  "partner_id": "GLOBEX",
+  "protocol": "AS2",
+  "error_message": "AS2 encryption failed: CertificateExpiredException: NotAfter: Tue Sep 01 00:00:00 UTC 2026",
+  "log_excerpt": "POST https://edi.globex.example/as2 AS2-To: GLOBEXLOG",
+  "payload_excerpt": "",
+  "ack_excerpt": "",
+  "occurred_at": "2026-09-15T10:00:00+00:00"
+}

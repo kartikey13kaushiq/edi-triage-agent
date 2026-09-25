@@ -1,0 +1,705 @@
+{
+  "run_at": "2026-09-24T16:42:01+00:00",
+  "llm": "heuristic",
+  "model": "heuristic",
+  "max_hops": 4,
+  "n": 32,
+  "accuracy": {
+    "majority_baseline": 0.25,
+    "classifier_only": 0.6875,
+    "agent": 1.0
+  },
+  "majority_label": "transport_handshake",
+  "per_category": {
+    "certificate_expiry": {
+      "n": 7,
+      "classifier_recall": 0.5714285714285714,
+      "agent_recall": 1.0
+    },
+    "envelope_ack_mismatch": {
+      "n": 8,
+      "classifier_recall": 0.75,
+      "agent_recall": 1.0
+    },
+    "partner_misconfig": {
+      "n": 7,
+      "classifier_recall": 0.8571428571428571,
+      "agent_recall": 1.0
+    },
+    "transport_handshake": {
+      "n": 8,
+      "classifier_recall": 0.625,
+      "agent_recall": 1.0
+    },
+    "unknown": {
+      "n": 2,
+      "classifier_recall": 0.5,
+      "agent_recall": 1.0
+    }
+  },
+  "retrieval_family_hit_rate": 1.0,
+  "reached_approval_gate": 0.9375,
+  "escalated": 2,
+  "errors": 0,
+  "mean_hops": 1.65625,
+  "cost_per_run_usd": 0.0,
+  "latency_p50_s": 0.0064249849999669095,
+  "latency_p95_s": 0.010172835000048508,
+  "records": [
+    {
+      "incident_id": "INC-001",
+      "label": "transport_handshake",
+      "note": "",
+      "initial": "transport_handshake",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "transport_worker"
+      ],
+      "cited": [
+        "as2-transport#symptoms",
+        "as2-transport#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.010172835000048508,
+      "error": null
+    },
+    {
+      "incident_id": "INC-002",
+      "label": "transport_handshake",
+      "note": "no signal in the text; needs the probe",
+      "initial": "partner_misconfig",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 2,
+      "workers": [
+        "partner_config_worker",
+        "transport_worker"
+      ],
+      "cited": [
+        "as2-transport#remediation",
+        "as2-transport#symptoms"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.008184882000023208,
+      "error": null
+    },
+    {
+      "incident_id": "INC-003",
+      "label": "transport_handshake",
+      "note": "",
+      "initial": "transport_handshake",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "transport_worker"
+      ],
+      "cited": [
+        "sftp-transport#symptoms",
+        "as2-transport#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.007255305000171575,
+      "error": null
+    },
+    {
+      "incident_id": "INC-004",
+      "label": "transport_handshake",
+      "note": "no signal in the text",
+      "initial": "unknown",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "transport_worker"
+      ],
+      "cited": [
+        "sftp-transport#symptoms",
+        "as2-transport#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.006320161999838092,
+      "error": null
+    },
+    {
+      "incident_id": "INC-005",
+      "label": "transport_handshake",
+      "note": "",
+      "initial": "transport_handshake",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "transport_worker"
+      ],
+      "cited": [
+        "sftp-transport#symptoms",
+        "sftp-transport#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005930386000045473,
+      "error": null
+    },
+    {
+      "incident_id": "INC-006",
+      "label": "transport_handshake",
+      "note": "text says auth; evidence says host key",
+      "initial": "partner_misconfig",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 2,
+      "workers": [
+        "partner_config_worker",
+        "transport_worker"
+      ],
+      "cited": [
+        "sftp-transport#remediation",
+        "sftp-transport#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.0070891040002152295,
+      "error": null
+    },
+    {
+      "incident_id": "INC-007",
+      "label": "transport_handshake",
+      "note": "",
+      "initial": "transport_handshake",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "transport_worker"
+      ],
+      "cited": [
+        "as2-transport#diagnosis",
+        "as2-transport#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.0065820949998851574,
+      "error": null
+    },
+    {
+      "incident_id": "INC-008",
+      "label": "transport_handshake",
+      "note": "",
+      "initial": "transport_handshake",
+      "final": "transport_handshake",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "transport_worker"
+      ],
+      "cited": [
+        "sftp-transport#symptoms",
+        "sftp-transport#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.006868928000130836,
+      "error": null
+    },
+    {
+      "incident_id": "INC-009",
+      "label": "certificate_expiry",
+      "note": "",
+      "initial": "certificate_expiry",
+      "final": "certificate_expiry",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "certificate_worker"
+      ],
+      "cited": [
+        "certificates#diagnosis",
+        "certificates#symptoms"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005326825999873108,
+      "error": null
+    },
+    {
+      "incident_id": "INC-010",
+      "label": "certificate_expiry",
+      "note": "",
+      "initial": "certificate_expiry",
+      "final": "certificate_expiry",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "certificate_worker"
+      ],
+      "cited": [
+        "certificates#diagnosis",
+        "certificates#symptoms"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.0055202550001922646,
+      "error": null
+    },
+    {
+      "incident_id": "INC-011",
+      "label": "certificate_expiry",
+      "note": "",
+      "initial": "certificate_expiry",
+      "final": "certificate_expiry",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "certificate_worker"
+      ],
+      "cited": [
+        "certificates#diagnosis",
+        "certificates#symptoms"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005666736999955901,
+      "error": null
+    },
+    {
+      "incident_id": "INC-012",
+      "label": "certificate_expiry",
+      "note": "",
+      "initial": "certificate_expiry",
+      "final": "certificate_expiry",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "certificate_worker"
+      ],
+      "cited": [
+        "certificates#symptoms",
+        "certificates#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.00622061399985796,
+      "error": null
+    },
+    {
+      "incident_id": "INC-013",
+      "label": "certificate_expiry",
+      "note": "text points at partner config; evidence is a future-dated cert",
+      "initial": "partner_misconfig",
+      "final": "certificate_expiry",
+      "status": "awaiting_approval",
+      "hops": 3,
+      "workers": [
+        "partner_config_worker",
+        "transport_worker",
+        "certificate_worker"
+      ],
+      "cited": [
+        "certificates#symptoms",
+        "certificates#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.007502804999830914,
+      "error": null
+    },
+    {
+      "incident_id": "INC-014",
+      "label": "certificate_expiry",
+      "note": "no signal in the text",
+      "initial": "unknown",
+      "final": "certificate_expiry",
+      "status": "awaiting_approval",
+      "hops": 2,
+      "workers": [
+        "transport_worker",
+        "certificate_worker"
+      ],
+      "cited": [
+        "certificates#diagnosis",
+        "certificates#symptoms"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.0066269309998006065,
+      "error": null
+    },
+    {
+      "incident_id": "INC-015",
+      "label": "certificate_expiry",
+      "note": "no signal in the text",
+      "initial": "partner_misconfig",
+      "final": "certificate_expiry",
+      "status": "awaiting_approval",
+      "hops": 3,
+      "workers": [
+        "partner_config_worker",
+        "transport_worker",
+        "certificate_worker"
+      ],
+      "cited": [
+        "certificates#symptoms",
+        "certificates#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.008653600999878108,
+      "error": null
+    },
+    {
+      "incident_id": "INC-016",
+      "label": "envelope_ack_mismatch",
+      "note": "",
+      "initial": "envelope_ack_mismatch",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#symptoms",
+        "envelope-ack#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005440263000082268,
+      "error": null
+    },
+    {
+      "incident_id": "INC-017",
+      "label": "envelope_ack_mismatch",
+      "note": "",
+      "initial": "envelope_ack_mismatch",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#symptoms",
+        "envelope-ack#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.008263647999910972,
+      "error": null
+    },
+    {
+      "incident_id": "INC-018",
+      "label": "envelope_ack_mismatch",
+      "note": "",
+      "initial": "unknown",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 4,
+      "workers": [
+        "transport_worker",
+        "certificate_worker",
+        "partner_config_worker",
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#symptoms",
+        "envelope-ack#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.009331851999831997,
+      "error": null
+    },
+    {
+      "incident_id": "INC-019",
+      "label": "envelope_ack_mismatch",
+      "note": "",
+      "initial": "envelope_ack_mismatch",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#remediation",
+        "envelope-ack#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.0046518310000465135,
+      "error": null
+    },
+    {
+      "incident_id": "INC-020",
+      "label": "envelope_ack_mismatch",
+      "note": "",
+      "initial": "envelope_ack_mismatch",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#symptoms",
+        "as2-transport#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.00480024700004833,
+      "error": null
+    },
+    {
+      "incident_id": "INC-021",
+      "label": "envelope_ack_mismatch",
+      "note": "no signal in the text; the ack says rejected",
+      "initial": "partner_misconfig",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 4,
+      "workers": [
+        "partner_config_worker",
+        "transport_worker",
+        "certificate_worker",
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#symptoms",
+        "envelope-ack#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.011381156000197734,
+      "error": null
+    },
+    {
+      "incident_id": "INC-022",
+      "label": "envelope_ack_mismatch",
+      "note": "",
+      "initial": "envelope_ack_mismatch",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#symptoms",
+        "envelope-ack#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.004534134000095946,
+      "error": null
+    },
+    {
+      "incident_id": "INC-023",
+      "label": "envelope_ack_mismatch",
+      "note": "",
+      "initial": "envelope_ack_mismatch",
+      "final": "envelope_ack_mismatch",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "envelope_worker"
+      ],
+      "cited": [
+        "envelope-ack#symptoms",
+        "envelope-ack#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005427170000075421,
+      "error": null
+    },
+    {
+      "incident_id": "INC-024",
+      "label": "partner_misconfig",
+      "note": "",
+      "initial": "partner_misconfig",
+      "final": "partner_misconfig",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "partner_config_worker"
+      ],
+      "cited": [
+        "partner-config#diagnosis",
+        "partner-config#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005727362000016001,
+      "error": null
+    },
+    {
+      "incident_id": "INC-025",
+      "label": "partner_misconfig",
+      "note": "",
+      "initial": "partner_misconfig",
+      "final": "partner_misconfig",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "partner_config_worker"
+      ],
+      "cited": [
+        "partner-config#remediation",
+        "partner-config#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.006420859999934692,
+      "error": null
+    },
+    {
+      "incident_id": "INC-026",
+      "label": "partner_misconfig",
+      "note": "",
+      "initial": "partner_misconfig",
+      "final": "partner_misconfig",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "partner_config_worker"
+      ],
+      "cited": [
+        "partner-config#diagnosis",
+        "partner-config#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005992936000211557,
+      "error": null
+    },
+    {
+      "incident_id": "INC-027",
+      "label": "partner_misconfig",
+      "note": "",
+      "initial": "partner_misconfig",
+      "final": "partner_misconfig",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "partner_config_worker"
+      ],
+      "cited": [
+        "partner-config#diagnosis",
+        "partner-config#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005956669999932274,
+      "error": null
+    },
+    {
+      "incident_id": "INC-028",
+      "label": "partner_misconfig",
+      "note": "text mentions handshake; evidence is the username",
+      "initial": "transport_handshake",
+      "final": "partner_misconfig",
+      "status": "awaiting_approval",
+      "hops": 3,
+      "workers": [
+        "transport_worker",
+        "certificate_worker",
+        "partner_config_worker"
+      ],
+      "cited": [
+        "partner-config#diagnosis",
+        "partner-config#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.009359809999978097,
+      "error": null
+    },
+    {
+      "incident_id": "INC-029",
+      "label": "partner_misconfig",
+      "note": "",
+      "initial": "partner_misconfig",
+      "final": "partner_misconfig",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "partner_config_worker"
+      ],
+      "cited": [
+        "partner-config#diagnosis",
+        "partner-config#remediation"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.006707195999979376,
+      "error": null
+    },
+    {
+      "incident_id": "INC-030",
+      "label": "partner_misconfig",
+      "note": "no signal in the text; AS2-From is wrong",
+      "initial": "partner_misconfig",
+      "final": "partner_misconfig",
+      "status": "awaiting_approval",
+      "hops": 1,
+      "workers": [
+        "partner_config_worker"
+      ],
+      "cited": [
+        "partner-config#diagnosis",
+        "sftp-transport#diagnosis"
+      ],
+      "llm_calls": 3,
+      "cost_usd": 0.0,
+      "latency_s": 0.005686925999953019,
+      "error": null
+    },
+    {
+      "incident_id": "INC-031",
+      "label": "unknown",
+      "note": "",
+      "initial": "partner_misconfig",
+      "final": "unknown",
+      "status": "escalated",
+      "hops": 4,
+      "workers": [
+        "partner_config_worker",
+        "transport_worker",
+        "certificate_worker",
+        "envelope_worker"
+      ],
+      "cited": [],
+      "llm_calls": 1,
+      "cost_usd": 0.0,
+      "latency_s": 0.007933119999961491,
+      "error": null
+    },
+    {
+      "incident_id": "INC-032",
+      "label": "unknown",
+      "note": "",
+      "initial": "unknown",
+      "final": "unknown",
+      "status": "escalated",
+      "hops": 4,
+      "workers": [
+        "transport_worker",
+        "certificate_worker",
+        "partner_config_worker",
+        "envelope_worker"
+      ],
+      "cited": [],
+      "llm_calls": 1,
+      "cost_usd": 0.0,
+      "latency_s": 0.0064249849999669095,
+      "error": null
+    }
+  ]
+}

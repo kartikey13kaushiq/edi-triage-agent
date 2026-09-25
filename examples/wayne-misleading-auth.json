@@ -1,0 +1,10 @@
+{
+  "incident_id": "INC-013",
+  "partner_id": "WAYNE",
+  "protocol": "AS2",
+  "error_message": "MDN: authentication-failed",
+  "log_excerpt": "POST https://as2.wayne-dist.example/inbound AS2-To: WAYNEDIST AS2-From: PRECISEHUB",
+  "payload_excerpt": "",
+  "ack_excerpt": "",
+  "occurred_at": "2026-09-15T10:00:00+00:00"
+}

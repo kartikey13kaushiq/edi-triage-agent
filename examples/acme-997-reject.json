@@ -1,0 +1,10 @@
+{
+  "incident_id": "INC-016",
+  "partner_id": "ACME",
+  "protocol": "AS2",
+  "error_message": "997 received with AK9=R (rejected) for group 4411",
+  "log_excerpt": "AS2-To: ACMERETAIL",
+  "payload_excerpt": "ISA*00*          *00*          *ZZ*PRECISEHUB     *ZZ*ACMERETAIL     *260915*1200*^*00501*000004411*0*P*:~GS*PO*PRECISEHUB*ACMERETAIL*20260915*1200*4411*X*005010~ST*850*0001~BEG*00*SA*PO-88121**20260915~PO1*1*10*EA*9.5**VP*SKU-1~CTT*1~SE*6*0001~GE*1*4411~IEA*1*000004411~",
+  "ack_excerpt": "ISA*00*          *00*          *ZZ*ACMERETAIL     *ZZ*PRECISEHUB     *260915*1200*^*00501*000009001*0*P*:~GS*PO*ACMERETAIL*PRECISEHUB*20260915*1200*1*X*005010~ST*997*0001~AK1*PO*4411~AK9*R*1*1*0~SE*4*0001~GE*1*1~IEA*1*000009001~",
+  "occurred_at": "2026-09-15T10:00:00+00:00"
+}

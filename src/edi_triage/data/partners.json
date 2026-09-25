@@ -1,0 +1,101 @@
+[
+  {
+    "partner_id": "ACME",
+    "name": "Acme Retail",
+    "protocol": "AS2",
+    "endpoint_url": "https://as2.acme-retail.example/as2/receive",
+    "as2_id_ours": "PRECISEHUB",
+    "as2_id_theirs": "ACMERETAIL",
+    "isa_receiver_id": "ACMERETAIL",
+    "expected_ack": "997",
+    "mdn": "sync-signed",
+    "certificates": [
+      {"usage": "signing", "subject": "CN=as2.acme-retail.example", "not_before": "2026-01-10T00:00:00+00:00", "not_after": "2027-01-10T00:00:00+00:00", "fingerprint": "AC:11:9F:02"},
+      {"usage": "encryption", "subject": "CN=as2.acme-retail.example", "not_before": "2026-01-10T00:00:00+00:00", "not_after": "2027-01-10T00:00:00+00:00", "fingerprint": "AC:22:10:7B"}
+    ],
+    "last_probe": {"reachable": true, "tls_version": "TLSv1.3", "http_status": 200, "detail": "handshake ok"}
+  },
+  {
+    "partner_id": "GLOBEX",
+    "name": "Globex Logistics",
+    "protocol": "AS2",
+    "endpoint_url": "https://edi.globex.example/as2",
+    "as2_id_ours": "PRECISEHUB",
+    "as2_id_theirs": "GLOBEXLOG",
+    "isa_receiver_id": "GLOBEXLOG",
+    "expected_ack": "997",
+    "mdn": "async-signed",
+    "certificates": [
+      {"usage": "signing", "subject": "CN=edi.globex.example", "not_before": "2025-08-01T00:00:00+00:00", "not_after": "2026-09-01T00:00:00+00:00", "fingerprint": "GB:07:A1:44"},
+      {"usage": "encryption", "subject": "CN=edi.globex.example", "not_before": "2025-08-01T00:00:00+00:00", "not_after": "2026-09-01T00:00:00+00:00", "fingerprint": "GB:3C:90:11"}
+    ],
+    "last_probe": {"reachable": true, "tls_version": "TLSv1.2", "http_status": 200, "detail": "handshake ok"}
+  },
+  {
+    "partner_id": "INITECH",
+    "name": "Initech Manufacturing",
+    "protocol": "SFTP",
+    "endpoint_url": "sftp://sftp.initech.example:22/inbound",
+    "sftp_user": "precise_out",
+    "host_key_fingerprint": "SHA256:q8bZ3pK1nT0wYv9e",
+    "isa_receiver_id": "INITECHMFG",
+    "expected_ack": "999",
+    "certificates": [],
+    "last_probe": {"reachable": true, "ssh_banner": "SSH-2.0-OpenSSH_9.6", "host_key_fingerprint": "SHA256:Xr4mLw0Q7aZcE2hd", "detail": "host key differs from pinned fingerprint"}
+  },
+  {
+    "partner_id": "UMBRELLA",
+    "name": "Umbrella Pharma",
+    "protocol": "AS2",
+    "endpoint_url": "https://b2b.umbrella.example/receive",
+    "as2_id_ours": "PRECISEHUB",
+    "as2_id_theirs": "UMBRELLAPH",
+    "isa_receiver_id": "UMBRELLAPH",
+    "expected_ack": "999",
+    "mdn": "sync-signed",
+    "certificates": [
+      {"usage": "signing", "subject": "CN=b2b.umbrella.example", "not_before": "2026-03-01T00:00:00+00:00", "not_after": "2027-03-01T00:00:00+00:00", "fingerprint": "UM:5E:21:C0"}
+    ],
+    "last_probe": {"reachable": false, "tls_version": null, "detail": "server offered only TLSv1.0; client minimum is TLSv1.2"}
+  },
+  {
+    "partner_id": "STARK",
+    "name": "Stark Components",
+    "protocol": "SFTP",
+    "endpoint_url": "sftp://files.stark.example:2222/edi/in",
+    "sftp_user": "precise_edi",
+    "host_key_fingerprint": "SHA256:Hk2n9TzQ0pLm4sVb",
+    "isa_receiver_id": "STARKCOMP",
+    "expected_ack": "997",
+    "certificates": [],
+    "last_probe": {"reachable": true, "ssh_banner": "SSH-2.0-OpenSSH_8.9", "host_key_fingerprint": "SHA256:Hk2n9TzQ0pLm4sVb", "detail": "handshake ok"}
+  },
+  {
+    "partner_id": "WAYNE",
+    "name": "Wayne Distribution",
+    "protocol": "AS2",
+    "endpoint_url": "https://as2.wayne-dist.example/inbound",
+    "as2_id_ours": "PRECISEHUB",
+    "as2_id_theirs": "WAYNEDIST",
+    "isa_receiver_id": "WAYNEDIST",
+    "expected_ack": "999",
+    "mdn": "sync-unsigned",
+    "certificates": [
+      {"usage": "signing", "subject": "CN=as2.wayne-dist.example", "not_before": "2026-10-01T00:00:00+00:00", "not_after": "2027-10-01T00:00:00+00:00", "fingerprint": "WY:90:0D:1E"},
+      {"usage": "encryption", "subject": "CN=as2.wayne-dist.example", "not_before": "2025-06-01T00:00:00+00:00", "not_after": "2026-12-01T00:00:00+00:00", "fingerprint": "WY:44:AB:02"}
+    ],
+    "last_probe": {"reachable": true, "tls_version": "TLSv1.3", "http_status": 200, "detail": "handshake ok"}
+  },
+  {
+    "partner_id": "HOOLI",
+    "name": "Hooli Grocers",
+    "protocol": "SFTP",
+    "endpoint_url": "sftp://sftp.hooli.example:22/incoming",
+    "sftp_user": "precise",
+    "host_key_fingerprint": "SHA256:Ho0l1K3yF1ng3rPr",
+    "isa_receiver_id": "HOOLIGROC",
+    "expected_ack": "997",
+    "certificates": [],
+    "last_probe": {"reachable": false, "detail": "connection timed out after 30s (port 22)"}
+  }
+]
