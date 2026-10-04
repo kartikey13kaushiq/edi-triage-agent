@@ -69,9 +69,7 @@ def chunk_markdown(source: str, text: str, max_chars: int = 1200, overlap: int =
         for n, window in enumerate(windows):
             slug = re.sub(r"[^a-z0-9]+", "-", heading.lower()).strip("-")
             chunk_id = f"{Path(source).stem}#{slug}" + (f"-{n}" if len(windows) > 1 else "")
-            chunks.append(
-                Chunk(chunk_id, source, title, heading.strip(), f"{title} - {heading.strip()}\n{window}")
-            )
+            chunks.append(Chunk(chunk_id, source, title, heading.strip(), f"{title} - {heading.strip()}\n{window}"))
     return chunks
 
 

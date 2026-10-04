@@ -93,8 +93,7 @@ def build() -> list[dict]:
             "SFTP",
             "transport_handshake",
             "SFTP upload failed: authentication-failed before session start",
-            "ssh sftp.initech.example: server host key SHA256:Xr4mLw0Q7aZcE2hd not in known_hosts; "
-            "user=precise_out",
+            "ssh sftp.initech.example: server host key SHA256:Xr4mLw0Q7aZcE2hd not in known_hosts; user=precise_out",
             note="text says auth; evidence says host key",
         ),
         inc(

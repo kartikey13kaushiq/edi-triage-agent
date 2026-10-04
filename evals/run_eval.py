@@ -10,7 +10,8 @@ and reports per-run cost, latency and hops, so a routing or prompt change is acc
 evidence rather than impression.
 
   python evals/run_eval.py                       # heuristic backend, offline, free
-  python evals/run_eval.py --llm claude          # Claude backend (needs ANTHROPIC_API_KEY)
+  python evals/run_eval.py --llm claude          # native Claude backend (needs ANTHROPIC_API_KEY)
+  python evals/run_eval.py --llm openai:gpt-4.1  # any agentkit provider: gemini:..., ollama:..., vllm:...
 """
 
 from __future__ import annotations
@@ -53,9 +54,7 @@ def evaluate(llm_name: str, max_hops: int, dataset: Path) -> dict:
         started = time.perf_counter()
         error = None
         try:
-            state = graph.invoke(
-                initial_state(incident), {"configurable": {"thread_id": incident.incident_id}}
-            )
+            state = graph.invoke(initial_state(incident), {"configurable": {"thread_id": incident.incident_id}})
         except Exception as exc:  # a crashed run is scored as wrong, not skipped
             state, error = {}, f"{type(exc).__name__}: {exc}"
         latency = time.perf_counter() - started
@@ -146,8 +145,7 @@ def to_markdown(report: dict) -> str:
     hit = report["retrieval_family_hit_rate"]
     lines += [
         "",
-        f"- Retrieval: diagnosis cited a runbook from the right failure family in "
-        f"{hit:.0%} of diagnosed incidents"
+        f"- Retrieval: diagnosis cited a runbook from the right failure family in {hit:.0%} of diagnosed incidents"
         if hit is not None
         else "- Retrieval: n/a",
         f"- Reached the human approval gate: {report['reached_approval_gate']:.0%}; "
@@ -172,7 +170,7 @@ def to_markdown(report: dict) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--llm", default="heuristic", choices=["heuristic", "claude"])
+    parser.add_argument("--llm", default="heuristic", help="heuristic | claude | provider:model (any agentkit spec)")
     parser.add_argument("--max-hops", type=int, default=4)
     parser.add_argument("--dataset", type=Path, default=HERE / "incidents.jsonl")
     parser.add_argument("--out", type=Path, default=HERE / "results")
@@ -180,7 +178,7 @@ def main() -> None:
 
     report = evaluate(args.llm, args.max_hops, args.dataset)
     args.out.mkdir(exist_ok=True)
-    stem = f"{args.llm}-hops{args.max_hops}"
+    stem = f"{args.llm.replace(':', '_').replace('/', '_')}-hops{args.max_hops}"
     (args.out / f"{stem}.json").write_text(json.dumps(report, indent=2))
     (args.out / f"{stem}.md").write_text(to_markdown(report))
     print(to_markdown(report))

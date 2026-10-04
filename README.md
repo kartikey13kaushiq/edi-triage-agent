@@ -1,5 +1,7 @@
 # B2B/EDI Failure Triage Agent
 
+[![CI](https://github.com/kartikey13kaushiq/edi-triage-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/kartikey13kaushiq/edi-triage-agent/actions/workflows/ci.yml) ![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) [![Ruff](https://img.shields.io/badge/lint-ruff-261230)](https://github.com/astral-sh/ruff)
+
 A supervisor-worker **LangGraph** agent that classifies and diagnoses failed B2B/EDI transfers
 (AS2/SFTP handshake errors, X12 envelope and 997/999/TA1 ack mismatches, certificate expiry,
 partner misconfiguration). It routes each incident to a specialised worker, grounds the diagnosis
@@ -61,6 +63,7 @@ classifier, and limiting the hop budget to 1 gives back most of that gain. Full 
 ```bash
 export ANTHROPIC_API_KEY=...
 python evals/run_eval.py --llm claude        # writes evals/results/claude-hops4.{json,md}
+python evals/run_eval.py --llm openai:gpt-4.1 # or gemini:..., ollama:..., any agentkit provider
 ```
 
 ## Run it
@@ -84,15 +87,20 @@ curl -s localhost:8000/incidents/<thread_id>/decision -H 'content-type: applicat
      -d '{"approved": true, "reviewer": "oncall"}'
 ```
 
-Or from the repo root: `docker compose up --build` (Postgres with pgvector, and this API on :8001).
+Or with Docker: `docker build -t edi-triage-agent . && docker run -p 8000:8000 edi-triage-agent` (set `DATABASE_URL` for durable checkpoints).
 
-Configuration: `TRIAGE_LLM` (`claude` | `heuristic`), `TRIAGE_MODEL` (default `claude-opus-5`),
+**Any LLM provider.** `TRIAGE_LLM` / `--llm` takes `heuristic`, `claude` (native Anthropic
+backend) or any `agentkit-core` (the portfolio's provider-agnostic core) spec: `openai:gpt-4.1`, `gemini:gemini-2.5-pro`,
+`azure:<deployment>`, `ollama:qwen2.5:14b`, `vllm:<model>`... Structured outputs work on every
+provider: constrained decoding where it's supported, validation and repair where it isn't.
+
+Configuration: `TRIAGE_LLM` (`heuristic` | `claude` | `provider:model`), `TRIAGE_MODEL` (native Claude backend, default `claude-opus-5`),
 `DATABASE_URL`, `RETRIEVER=pgvector`, `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST`.
 
 ## Tests
 
 ```bash
-pytest -q                                                    # 22 tests, fully offline
+pytest -q                                                    # 23 tests, fully offline
 TEST_DATABASE_URL=postgresql://... pytest tests/test_postgres.py   # pgvector + cross-process resume
 ```
 

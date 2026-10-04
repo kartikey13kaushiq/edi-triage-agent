@@ -173,9 +173,7 @@ def build_graph(
             confirmed = CATEGORY_FOR_WORKER[confirming[-1]["worker"]]
             cls = dict(state["classification"])
             if cls["category"] != confirmed.value:
-                cls["rationale"] += (
-                    f" | reclassified to {confirmed.value} by {confirming[-1]['worker']} evidence"
-                )
+                cls["rationale"] += f" | reclassified to {confirmed.value} by {confirming[-1]['worker']} evidence"
                 cls["category"] = confirmed.value
             return Command(goto="diagnose", update={"classification": cls})
 

@@ -47,12 +47,20 @@ class UsageMeter:
     latency_s: float = 0.0
     by_step: dict[str, int] = field(default_factory=dict)
 
-    def record(self, step: str, model: str, input_tokens: int, output_tokens: int, latency_s: float) -> None:
+    def record(
+        self,
+        step: str,
+        model: str,
+        input_tokens: int,
+        output_tokens: int,
+        latency_s: float,
+        cost: float | None = None,
+    ) -> None:
         price_in, price_out = PRICING.get(model, (0.0, 0.0))
         self.calls += 1
         self.input_tokens += input_tokens
         self.output_tokens += output_tokens
-        self.cost_usd += (input_tokens * price_in + output_tokens * price_out) / 1_000_000
+        self.cost_usd += cost if cost is not None else (input_tokens * price_in + output_tokens * price_out) / 1e6
         self.latency_s += latency_s
         self.by_step[step] = self.by_step.get(step, 0) + 1
 
@@ -119,9 +127,7 @@ class ClaudeTriageLLM:
                 output_format=schema,
             )
             usage = response.usage
-            self.meter.record(
-                step, self.model, usage.input_tokens, usage.output_tokens, time.perf_counter() - started
-            )
+            self.meter.record(step, self.model, usage.input_tokens, usage.output_tokens, time.perf_counter() - started)
             price_in, price_out = PRICING.get(self.model, (0.0, 0.0))
             gen.update(
                 output=response.parsed_output.model_dump(mode="json") if response.parsed_output else None,
@@ -132,9 +138,7 @@ class ClaudeTriageLLM:
                 },
             )
         if response.stop_reason == "refusal" or response.parsed_output is None:
-            raise RuntimeError(
-                f"{step}: model returned no structured output (stop_reason={response.stop_reason})"
-            )
+            raise RuntimeError(f"{step}: model returned no structured output (stop_reason={response.stop_reason})")
         return response.parsed_output
 
     @staticmethod
@@ -252,10 +256,7 @@ class HeuristicTriageLLM:
 
     def classify(self, incident: Incident) -> ClassificationOutput:
         text = f"{incident.error_message}\n{incident.log_excerpt}".lower()
-        scores = {
-            cat: sum(1 for pattern in patterns if re.search(pattern, text))
-            for cat, patterns in _SIGNALS.items()
-        }
+        scores = {cat: sum(1 for pattern in patterns if re.search(pattern, text)) for cat, patterns in _SIGNALS.items()}
         ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
         (best, best_score), (second, second_score) = ranked[0], ranked[1]
         self.meter.record("classify", self.model, 0, 0, 0.0)
@@ -274,9 +275,7 @@ class HeuristicTriageLLM:
     def diagnose(self, incident, category, evidence, runbooks) -> Diagnosis:
         self.meter.record("diagnose", self.model, 0, 0, 0.0)
         findings = [e["finding"] for e in evidence if e.get("finding")]
-        root = (
-            findings[0] if findings else f"{category.value.replace('_', ' ')} (no confirming tool evidence)"
-        )
+        root = findings[0] if findings else f"{category.value.replace('_', ' ')} (no confirming tool evidence)"
         return Diagnosis(
             root_cause=root,
             explanation="; ".join(findings) or incident.error_message,
@@ -294,12 +293,72 @@ class HeuristicTriageLLM:
         )
 
 
+class AgentkitTriageLLM:
+    """Provider-agnostic backend: any ``agentkit`` model (OpenAI-compatible, Anthropic, Gemini, local...).
+
+    Uses native structured outputs where the provider supports them and schema-in-prompt plus
+    Pydantic validation and repair where it does not.
+    """
+
+    def __init__(self, model: Any):
+        self.chat_model = model
+        self.model = f"{model.provider}:{model.model}"
+        self.meter = UsageMeter()
+
+    def _parse(self, step: str, prompt: str, schema: type[T]) -> T:
+        from agentkit import generate_structured
+        from agentkit.pricing import cost_usd
+
+        with get_tracer().observe(step, as_type="generation", model=self.model, input=prompt) as gen:
+            result = generate_structured(self.chat_model, schema, prompt, system=SYSTEM_PROMPT, max_tokens=4096)
+            for r in result.responses:
+                self.meter.record(
+                    step,
+                    self.model,
+                    r.usage.input_tokens,
+                    r.usage.output_tokens,
+                    r.latency_s,
+                    cost=cost_usd(r.provider, r.model, r.usage) or 0.0,
+                )
+            gen.update(output=result.value.model_dump(mode="json"))
+            return result.value
+
+    def classify(self, incident: Incident) -> ClassificationOutput:
+        prompt = (
+            f"{ClaudeTriageLLM._incident_block(incident)}\n\nClassify this failure. Set `secondary` to the next "
+            "most likely category if the evidence is ambiguous, otherwise null."
+        )
+        return self._parse("classify", prompt, ClassificationOutput)
+
+    def diagnose(self, incident, category, evidence, runbooks) -> Diagnosis:
+        prompt = (
+            f"{ClaudeTriageLLM._incident_block(incident)}\n\n<category>{category.value}</category>\n\n"
+            f"<tool_evidence>\n{json.dumps(evidence, indent=2, default=str)}\n</tool_evidence>\n\n"
+            f"<runbooks>\n{json.dumps(runbooks, indent=2)}\n</runbooks>\n\n"
+            "Diagnose the root cause. Prefer tool evidence over the error text when they disagree."
+        )
+        return self._parse("diagnose", prompt, Diagnosis)
+
+    def propose(self, incident, category, diagnosis, runbooks) -> RemediationProposal:
+        prompt = (
+            f"{ClaudeTriageLLM._incident_block(incident)}\n\n<category>{category.value}</category>\n\n"
+            f"<diagnosis>\n{diagnosis.model_dump_json(indent=2)}\n</diagnosis>\n\n"
+            f"<runbooks>\n{json.dumps(runbooks, indent=2)}\n</runbooks>\n\n"
+            "Propose the smallest remediation that resolves the root cause, following the runbooks."
+        )
+        return self._parse("propose", prompt, RemediationProposal)
+
+
 def make_llm(backend: str | None = None) -> TriageLLM:
-    backend = backend or os.environ.get(
-        "TRIAGE_LLM", "claude" if os.environ.get("ANTHROPIC_API_KEY") else "heuristic"
-    )
+    """``heuristic`` | ``claude`` (native Anthropic backend) | any agentkit spec such as ``openai:gpt-4.1``,
+    ``gemini:gemini-2.5-pro`` or ``ollama:qwen2.5:14b``."""
+    backend = backend or os.environ.get("TRIAGE_LLM", "claude" if os.environ.get("ANTHROPIC_API_KEY") else "heuristic")
     if backend == "claude":
         return ClaudeTriageLLM()
     if backend == "heuristic":
         return HeuristicTriageLLM()
+    if ":" in backend:
+        from agentkit import load_model
+
+        return AgentkitTriageLLM(load_model(backend))
     raise ValueError(f"unknown LLM backend {backend!r}")

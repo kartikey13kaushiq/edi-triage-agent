@@ -42,9 +42,7 @@ def test_suspended_run_survives_process_exit(labelled):
         "print(json.dumps({'thread_id': view['thread_id'], 'status': view['status']}))\n"
     )
     env = {**os.environ, "DATABASE_URL": URL, "PYTHONPATH": str(ROOT / "src")}
-    out = subprocess.run(
-        [sys.executable, "-c", script, incident], env=env, capture_output=True, text=True, check=True
-    )
+    out = subprocess.run([sys.executable, "-c", script, incident], env=env, capture_output=True, text=True, check=True)
     started = json.loads(out.stdout.strip().splitlines()[-1])
     assert started["status"] == "awaiting_approval"
 

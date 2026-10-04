@@ -108,8 +108,7 @@ def _validate(env: Envelope) -> None:
             env.issues.append(f"GS06 {g['control']} != GE02 {g['ge_control']}")
         if g["ge_count"] != len(g["transactions"]):
             env.issues.append(
-                f"GE01 declares {g['ge_count']} transactions in group {g['control']}, "
-                f"found {len(g['transactions'])}"
+                f"GE01 declares {g['ge_count']} transactions in group {g['control']}, found {len(g['transactions'])}"
             )
         for t in g["transactions"]:
             if t["se_control"] is None:
@@ -145,9 +144,7 @@ def compare_ack(payload_raw: str, ack_raw: str) -> dict:
             result["ack_type"] = "TA1"
             if seg[1].strip() != sent.isa_control:
                 result["matched"] = False
-                result["issues"].append(
-                    f"TA1 references interchange {seg[1].strip()}, sent {sent.isa_control}"
-                )
+                result["issues"].append(f"TA1 references interchange {seg[1].strip()}, sent {sent.isa_control}")
             if seg[4].strip() != "A":
                 result["status"] = "rejected"
                 result["issues"].append(f"TA1 ack code {seg[4].strip()}, note code {seg[5].strip()}")
@@ -157,9 +154,7 @@ def compare_ack(payload_raw: str, ack_raw: str) -> dict:
             sent_groups = {g["control"] for g in sent.groups}
             if seg[2].strip() not in sent_groups:
                 result["matched"] = False
-                result["issues"].append(
-                    f"AK1 references group {seg[2].strip()}, sent groups {sorted(sent_groups)}"
-                )
+                result["issues"].append(f"AK1 references group {seg[2].strip()}, sent groups {sorted(sent_groups)}")
         elif tag == "AK9":
             code = seg[1].strip()
             if code in _REJECT_CODES:
@@ -188,10 +183,7 @@ def build_interchange(
 
     ``transactions`` holds the body segments of each transaction set, without ST/SE.
     """
-    isa = (
-        f"ISA*00*{'':10}*00*{'':10}*ZZ*{sender:<15}*ZZ*{receiver:<15}*{date}*{time}*^*00501*"
-        f"{isa_control:09d}*0*P*:~"
-    )
+    isa = f"ISA*00*{'':10}*00*{'':10}*ZZ*{sender:<15}*ZZ*{receiver:<15}*{date}*{time}*^*00501*{isa_control:09d}*0*P*:~"
     assert len(isa) == 106, len(isa)
     segs = [isa, f"GS*PO*{sender}*{receiver}*20{date}*{time}*{group_control}*X*005010~"]
     for n, body in enumerate(transactions, start=1):
@@ -212,11 +204,6 @@ def build_functional_ack(
     return build_interchange(sender, receiver, isa_control, 1, [body], set_id=ack_type)
 
 
-def build_ta1(
-    sender: str, receiver: str, isa_control: int, acked_isa: int, code: str = "A", note: str = "000"
-) -> str:
-    isa = (
-        f"ISA*00*{'':10}*00*{'':10}*ZZ*{sender:<15}*ZZ*{receiver:<15}*260915*1200*^*00501*"
-        f"{isa_control:09d}*0*P*:~"
-    )
+def build_ta1(sender: str, receiver: str, isa_control: int, acked_isa: int, code: str = "A", note: str = "000") -> str:
+    isa = f"ISA*00*{'':10}*00*{'':10}*ZZ*{sender:<15}*ZZ*{receiver:<15}*260915*1200*^*00501*{isa_control:09d}*0*P*:~"
     return isa + f"TA1*{acked_isa:09d}*260915*1200*{code}*{note}~IEA*0*{isa_control:09d}~"

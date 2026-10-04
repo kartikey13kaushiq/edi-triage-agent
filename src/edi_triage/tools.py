@@ -53,9 +53,7 @@ def traced_tool(method: Callable[..., ToolResult]) -> Callable[..., ToolResult]:
 
     @functools.wraps(method)
     def wrapper(self: "Toolbox", *args: Any, **kwargs: Any) -> ToolResult:
-        with get_tracer().observe(
-            method.__name__, as_type="tool", input={"args": args, "kwargs": kwargs}
-        ) as obs:
+        with get_tracer().observe(method.__name__, as_type="tool", input={"args": args, "kwargs": kwargs}) as obs:
             result = method(self, *args, **kwargs)
             obs.update(
                 output=result.model_dump(mode="json"),
@@ -105,16 +103,12 @@ class Toolbox:
     def get_partner_profile(self, partner_id: str) -> ToolResult:
         partner = self.partners.get(partner_id)
         if partner is None:
-            return ToolResult.failure(
-                "get_partner_profile", "PARTNER_NOT_FOUND", f"no partner {partner_id!r}"
-            )
+            return ToolResult.failure("get_partner_profile", "PARTNER_NOT_FOUND", f"no partner {partner_id!r}")
         public = {k: v for k, v in partner.items() if k not in {"last_probe", "certificates"}}
         return ToolResult.success("get_partner_profile", public)
 
     @traced_tool
-    def check_certificates(
-        self, partner_id: str, as_of: datetime | None = None, warn_days: int = 14
-    ) -> ToolResult:
+    def check_certificates(self, partner_id: str, as_of: datetime | None = None, warn_days: int = 14) -> ToolResult:
         """Certificate validity at ``as_of`` (the incident time), defaulting to now."""
         partner = self.partners.get(partner_id)
         if partner is None:
@@ -174,9 +168,7 @@ class Toolbox:
         """Compare identifiers seen on the wire against the partner profile."""
         partner = self.partners.get(partner_id)
         if partner is None:
-            return ToolResult.failure(
-                "check_identity_config", "PARTNER_NOT_FOUND", f"no partner {partner_id!r}"
-            )
+            return ToolResult.failure("check_identity_config", "PARTNER_NOT_FOUND", f"no partner {partner_id!r}")
         mismatches: list[str] = []
 
         headers = {
@@ -190,9 +182,7 @@ class Toolbox:
 
         url = re.search(r"(https?://\S+|sftp://\S+)", log_excerpt)
         if url and partner.get("endpoint_url") and url.group(1).rstrip(".,") != partner["endpoint_url"]:
-            mismatches.append(
-                f"connected to {url.group(1)!r}, profile endpoint is {partner['endpoint_url']!r}"
-            )
+            mismatches.append(f"connected to {url.group(1)!r}, profile endpoint is {partner['endpoint_url']!r}")
 
         user = re.search(r"user(?:name)?[=: ]+'?([\w.-]+)", log_excerpt, re.IGNORECASE)
         if user and partner.get("sftp_user") and user.group(1) != partner["sftp_user"]:
@@ -203,9 +193,7 @@ class Toolbox:
                 env = x12.parse_envelope(payload_raw)
                 expected_rx = partner.get("isa_receiver_id")
                 if expected_rx and env.receiver_id != expected_rx:
-                    mismatches.append(
-                        f"ISA08 receiver is {env.receiver_id!r}, partner expects {expected_rx!r}"
-                    )
+                    mismatches.append(f"ISA08 receiver is {env.receiver_id!r}, partner expects {expected_rx!r}")
             except (x12.X12ParseError, IndexError, ValueError):
                 pass
 
